@@ -1,0 +1,71 @@
+name: build
+
+on: [push]
+
+jobs:
+
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.16
+
+    - name: Build
+      run: go build -v cmd/extraterm-launcher/extraterm-launcher.go
+
+    - name: Test
+      run: go test -v ./...
+
+    - name: Keep the executable
+      uses: actions/upload-artifact@v2
+      with:
+        name: extraterm-launcher-linux
+        path: extraterm-launcher
+
+  build-macos:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.16
+
+    - name: Build
+      run: go build -v cmd/extraterm-launcher/extraterm-launcher.go
+
+    - name: Test
+      run: go test -v ./...
+
+    - name: Keep the executable
+      uses: actions/upload-artifact@v2
+      with:
+        name: extraterm-launcher-macos
+        path: extraterm-launcher
+
+  build-windows:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.16
+
+    - name: Build
+      run: go build -v cmd/extraterm-launcher/extraterm-launcher.go
+
+    - name: Test
+      run: go test -v ./...
+
+    - name: Keep the executable
+      uses: actions/upload-artifact@v2
+      with:
+        name: extraterm-launcher-windows
+        path: extraterm-launcher.exe

@@ -1,3 +1,6 @@
 
 build:
-	go build cmd/extraterm-launcher/extraterm-launcher.go
+	go build -v cmd/extraterm-launcher/extraterm-launcher.go
+
+test:
+	go test -v ./...

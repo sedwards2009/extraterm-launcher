@@ -9,6 +9,7 @@ package settings
 
 import (
 	"os"
+	"path/filepath"
 )
 
 func IpcRunPath() string {
