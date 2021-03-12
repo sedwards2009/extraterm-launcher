@@ -6,8 +6,13 @@
  */
 package settings
 
+import (
+	"os"
+)
+
 func IpcRunPath() string {
-	return ""
+	appData := os.Getenv("APPDATA")
+	return filepath.Join(appData, ".config/extraterm/ipc.run")
 }
 
 const ExtratermExeName = "extraterm.exe"
