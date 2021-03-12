@@ -1,4 +1,5 @@
 // +build !windows
+
 /*
  * Copyright 2021 Simon Edwards <simon@simonzone.com>
  *
