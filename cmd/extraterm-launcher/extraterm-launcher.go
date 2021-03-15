@@ -31,8 +31,17 @@ func main() {
 	url := launchMainExecutable()
 	fmt.Printf("Main executable launched and base URL is %s\n", url)
 
-	if parsedArgs.CommandName != nil {
-		runCommand(url, parsedArgs)
+	var window *string = nil
+	for _, command := range parsedArgs.Commands {
+		if command.Window != nil {
+			window = command.Window
+		}
+
+		if command.Window == nil {
+			command.Window = window
+		}
+
+		runCommand(url, command)
 	}
 }
 
@@ -68,9 +77,9 @@ func runMainExecutable() string {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Printf("Executable %s\n", exePath)
 
 	mainExePath := filepath.Join(filepath.Dir(exePath), settings.ExtratermExeName)
+	fmt.Printf("Main executable path %s\n", mainExePath)
 	cmd := exec.Command(mainExePath)
 	if err := cmd.Start(); err != nil {
 		fmt.Fprintf(os.Stderr, "Unable to start the main Extraterm executable. %s\n", err)
@@ -105,11 +114,11 @@ type CommandJson struct {
 	Args        map[string]string `json:"args"`
 }
 
-func runCommand(url string, args *argsparser.CommandLineArguments) {
+func runCommand(url string, command *argsparser.Command) {
 	payload := new(CommandJson)
-	payload.CommandName = args.CommandName
-	payload.Window = args.Window
-	payload.Args = wordcase.KababCaseToCamelCaseMapKeys(args.CommandParameters)
+	payload.CommandName = command.CommandName
+	payload.Window = command.Window
+	payload.Args = wordcase.KababCaseToCamelCaseMapKeys(command.CommandParameters)
 
 	payloadString, _ := json.Marshal(payload)
 	fmt.Printf("  %s\n", string(payloadString))

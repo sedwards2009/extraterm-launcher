@@ -10,10 +10,18 @@ import (
 	"strings"
 )
 
-type CommandLineArguments struct {
+type Command struct {
 	Window            *string
 	CommandName       *string
 	CommandParameters map[string]string
+}
+
+type CommandLineArguments struct {
+	Commands []*Command
+}
+
+func makeCommand() *Command {
+	return &Command{CommandParameters: map[string]string{}}
 }
 
 type ParseState int
@@ -28,10 +36,12 @@ const (
 )
 
 func Parse(args *[]string) (parsed *CommandLineArguments, errString *string) {
-	result := &CommandLineArguments{CommandParameters: map[string]string{}}
+	result := &CommandLineArguments{Commands: []*Command{}}
 
 	state := ProgramName
 	commandFlag := ""
+
+	command := makeCommand()
 
 	for _, item := range *args {
 		switch state {
@@ -55,27 +65,38 @@ func Parse(args *[]string) (parsed *CommandLineArguments, errString *string) {
 
 		case WindowValue:
 			window := item
-			result.Window = &window
+			command.Window = &window
 			state = Flag
 
 		case CommandName:
 			commandName := item
-			result.CommandName = &commandName
+			command.CommandName = &commandName
 			state = CommandFlag
 
 		case CommandFlag:
-			if strings.HasPrefix(item, "--") {
+			if item == "--" {
+				if command.CommandName != nil {
+					result.Commands = append(result.Commands, command)
+					command = makeCommand()
+				}
+				state = Flag
+			} else if strings.HasPrefix(item, "--") {
 				commandFlag = item
 				state = CommandValue
 			} else {
 				errorMessage := fmt.Sprintf("Parameters to commands must start with '--'. Found: '%s'.", item)
 				return result, &errorMessage
 			}
+
 		case CommandValue:
 			commandValue := item
-			result.CommandParameters[commandFlag] = commandValue
+			command.CommandParameters[commandFlag] = commandValue
 			state = CommandFlag
 		}
+	}
+
+	if command.CommandName != nil {
+		result.Commands = append(result.Commands, command)
 	}
 
 	if state == CommandValue {
