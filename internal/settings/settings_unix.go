@@ -22,4 +22,4 @@ func IpcRunPath() string {
 }
 
 // ExtratermExeName is the name of the Extraterm main executable.
-const ExtratermExeName = "extraterm"
+const ExtratermExeName = "extraterm_main"

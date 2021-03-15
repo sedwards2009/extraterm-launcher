@@ -17,4 +17,4 @@ func IpcRunPath() string {
 	return filepath.Join(appData, ".config/extraterm/ipc.run")
 }
 
-const ExtratermExeName = "extraterm.exe"
+const ExtratermExeName = "extraterm_main.exe"
