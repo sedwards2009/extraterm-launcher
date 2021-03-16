@@ -20,7 +20,7 @@ type CommandLineArguments struct {
 	Commands []*Command
 }
 
-func makeCommand() *Command {
+func MakeCommand() *Command {
 	return &Command{CommandParameters: map[string]string{}}
 }
 
@@ -41,7 +41,7 @@ func Parse(args *[]string) (parsed *CommandLineArguments, errString *string) {
 	state := ProgramName
 	commandFlag := ""
 
-	command := makeCommand()
+	command := MakeCommand()
 
 	for _, item := range *args {
 		switch state {
@@ -77,7 +77,7 @@ func Parse(args *[]string) (parsed *CommandLineArguments, errString *string) {
 			if item == "--" {
 				if command.CommandName != nil {
 					result.Commands = append(result.Commands, command)
-					command = makeCommand()
+					command = MakeCommand()
 				}
 				state = Flag
 			} else if strings.HasPrefix(item, "--") {

@@ -31,17 +31,25 @@ func main() {
 	url := launchMainExecutable()
 	fmt.Printf("Main executable launched and base URL is %s\n", url)
 
-	var window *string = nil
-	for _, command := range parsedArgs.Commands {
-		if command.Window != nil {
-			window = command.Window
-		}
-
-		if command.Window == nil {
-			command.Window = window
-		}
-
+	if len(parsedArgs.Commands) == 0 {
+		command := argsparser.MakeCommand()
+		showCommandName := string("extraterm:window.show")
+		command.CommandName = &showCommandName
 		runCommand(url, command)
+	} else {
+
+		var window *string = nil
+		for _, command := range parsedArgs.Commands {
+			if command.Window != nil {
+				window = command.Window
+			}
+
+			if command.Window == nil {
+				command.Window = window
+			}
+
+			runCommand(url, command)
+		}
 	}
 }
 
