@@ -13,16 +13,16 @@ func TestParseWindow(t *testing.T) {
 
 	testData := []string{
 		"extraterm-launcher",
-		"-w",
-		"1",
 		"-c",
 		"extraterm:window.show",
+		"-w",
+		"1",
 	}
 
 	parsedArgs, errorString := Parse(&testData)
 
-	if errorString != nil {
-		t.Errorf("Parse error: %s", *errorString)
+	if len(errorString) != 0 {
+		t.Errorf("Parse error: %s", errorString)
 	}
 
 	if parsedArgs.Commands[0].Window == nil || *parsedArgs.Commands[0].Window != "1" {
@@ -40,8 +40,8 @@ func TestParseCommand(t *testing.T) {
 
 	parsedArgs, errorString := Parse(&testData)
 
-	if errorString != nil {
-		t.Errorf("Parse error: %s", *errorString)
+	if len(errorString) != 0 {
+		t.Errorf("Parse error: %s", errorString)
 	}
 
 	if parsedArgs.Commands[0].CommandName == nil || *parsedArgs.Commands[0].CommandName != "extraterm:window.listAll" {
@@ -61,8 +61,8 @@ func TestParseCommandParameters(t *testing.T) {
 
 	parsedArgs, errorString := Parse(&testData)
 
-	if errorString != nil {
-		t.Errorf("Parse error: %s", *errorString)
+	if len(errorString) != 0 {
+		t.Errorf("Parse error: %s", errorString)
 	}
 
 	if parsedArgs.Commands[0].CommandName == nil || *parsedArgs.Commands[0].CommandName != "extraterm:window.listAll" {
@@ -86,8 +86,8 @@ func TestParseMultipleCommands(t *testing.T) {
 
 	parsedArgs, errorString := Parse(&testData)
 
-	if errorString != nil {
-		t.Errorf("Parse error: %s", *errorString)
+	if len(errorString) != 0 {
+		t.Errorf("Parse error: %s", errorString)
 	}
 
 	if len(parsedArgs.Commands) != 2 {

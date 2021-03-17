@@ -24,7 +24,7 @@ func main() {
 	fmt.Println("Extraterm launcher")
 
 	parsedArgs, errorString := argsparser.Parse(&os.Args)
-	if errorString != nil {
+	if len(errorString) != 0 {
 		panic(errorString)
 	}
 

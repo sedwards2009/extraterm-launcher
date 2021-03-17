@@ -30,12 +30,16 @@ const (
 	ProgramName ParseState = iota
 	Flag
 	WindowValue
+
 	CommandName
 	CommandFlag
 	CommandValue
 )
 
-func Parse(args *[]string) (parsed *CommandLineArguments, errString *string) {
+const commandFlagStr = "-c"
+const windowFlagStr = "-w"
+
+func Parse(args *[]string) (parsed *CommandLineArguments, errString string) {
 	result := &CommandLineArguments{Commands: []*Command{}}
 
 	state := ProgramName
@@ -51,16 +55,14 @@ func Parse(args *[]string) (parsed *CommandLineArguments, errString *string) {
 
 		case Flag:
 			switch item {
+			case windowFlagStr:
+				return result, "-w parameter must be used after -c."
 
-			case "-w", "--window":
-				state = WindowValue
-
-			case "-c", "--command":
+			case commandFlagStr:
 				state = CommandName
 
 			default:
-				errorMessage := fmt.Sprintf("Unknown command line parameter '%s'.", item)
-				return result, &errorMessage
+				return result, fmt.Sprintf("Unknown parameter '%s'.", item)
 			}
 
 		case WindowValue:
@@ -74,18 +76,21 @@ func Parse(args *[]string) (parsed *CommandLineArguments, errString *string) {
 			state = CommandFlag
 
 		case CommandFlag:
-			if item == "--" {
+			if item == commandFlagStr {
 				if command.CommandName != nil {
 					result.Commands = append(result.Commands, command)
 					command = MakeCommand()
 				}
-				state = Flag
+				state = CommandName
+
+			} else if item == windowFlagStr {
+				state = WindowValue
+
 			} else if strings.HasPrefix(item, "--") {
 				commandFlag = item
 				state = CommandValue
 			} else {
-				errorMessage := fmt.Sprintf("Parameters to commands must start with '--'. Found: '%s'.", item)
-				return result, &errorMessage
+				return result, fmt.Sprintf("Parameters to commands must start with '--'. Found: '%s'.", item)
 			}
 
 		case CommandValue:
@@ -100,14 +105,12 @@ func Parse(args *[]string) (parsed *CommandLineArguments, errString *string) {
 	}
 
 	if state == CommandValue {
-		errorMessage := fmt.Sprintf("Command parameter '%s' does have a valkue.", commandFlag)
-		return result, &errorMessage
+		return result, fmt.Sprintf("Command parameter '%s' does have a valkue.", commandFlag)
 	}
 
 	if state == WindowValue {
-		errorMessage := "No value for window option was given."
-		return result, &errorMessage
+		return result, "No value for window option was given."
 	}
 
-	return result, nil
+	return result, ""
 }
