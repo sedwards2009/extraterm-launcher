@@ -11,6 +11,7 @@ import (
 	"extraterm-launcher/internal/settings"
 	"extraterm-launcher/internal/wordcase"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"os"
 	"os/exec"
@@ -21,45 +22,28 @@ import (
 )
 
 func main() {
-	fmt.Println("Extraterm launcher")
-
 	parsedArgs, errorString := argsparser.Parse(&os.Args)
 	if len(errorString) != 0 {
 		panic(errorString)
 	}
 
 	url := launchMainExecutable()
-	fmt.Printf("Main executable launched and base URL is %s\n", url)
 
+	exitCode := 0
 	if len(parsedArgs.Commands) == 0 {
-		command := argsparser.MakeCommand()
-		showCommandName := string("extraterm:window.show")
-		command.CommandName = &showCommandName
-		runCommand(url, command)
+		runShowWindowCommand(url)
 	} else {
-
-		var window *string = nil
-		for _, command := range parsedArgs.Commands {
-			if command.Window != nil {
-				window = command.Window
-			}
-
-			if command.Window == nil {
-				command.Window = window
-			}
-
-			runCommand(url, command)
-		}
+		exitCode = runAllCommands(url, parsedArgs)
 	}
+	os.Stdout.Sync()
+	os.Exit(exitCode)
 }
 
 func launchMainExecutable() string {
 	pid, url := readIpcRunFile(settings.IpcRunPath())
-
 	if pid < 0 {
 		url = runMainExecutable()
 	}
-
 	return url
 }
 
@@ -116,25 +100,77 @@ func waitForMainExecutableToAppear(pid int, ipcRunPath string) string {
 	return "" // Unreachable
 }
 
+func runShowWindowCommand(url string) {
+	command := argsparser.MakeCommand()
+	showCommandName := string("extraterm:window.show")
+	command.CommandName = &showCommandName
+	runCommand(url, command)
+}
+
+func runAllCommands(url string, parsedArgs *argsparser.CommandLineArguments) int {
+	var window *string = nil
+
+	if len(parsedArgs.Commands) != 1 {
+		fmt.Println("[")
+	}
+
+	for i, command := range parsedArgs.Commands {
+		if command.Window != nil {
+			window = command.Window
+		}
+
+		if command.Window == nil {
+			command.Window = window
+		}
+
+		httpStatusCode, jsonResult := runCommand(url, command)
+		if httpStatusCode < 200 || httpStatusCode >= 300 {
+			fmt.Println(jsonResult)
+			if len(parsedArgs.Commands) != 1 {
+				fmt.Println("[")
+			}
+			return 1
+		} else {
+
+			fmt.Print(jsonResult)
+			if i != len(parsedArgs.Commands)-1 {
+				fmt.Println(",")
+			} else {
+				fmt.Println("")
+			}
+		}
+	}
+
+	if len(parsedArgs.Commands) != 1 {
+		fmt.Println("[")
+	}
+	return 0
+}
+
 type CommandJson struct {
 	CommandName *string           `json:"command"`
 	Window      *string           `json:"window"`
 	Args        map[string]string `json:"args"`
 }
 
-func runCommand(url string, command *argsparser.Command) {
+func runCommand(url string, command *argsparser.Command) (httpStatusCode int, jsonBody string) {
 	payload := new(CommandJson)
 	payload.CommandName = command.CommandName
 	payload.Window = command.Window
 	payload.Args = wordcase.KababCaseToCamelCaseMapKeys(command.CommandParameters)
 
 	payloadString, _ := json.Marshal(payload)
-	fmt.Printf("  %s\n", string(payloadString))
 
 	buf := strings.NewReader(string(payloadString))
 	resp, err := http.Post(url+"/command", "application/json", buf)
 	if err != nil {
 		panic(err)
 	}
-	fmt.Printf("Response: %d", resp.StatusCode)
+	bodyBytes, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		panic(err)
+	}
+
+	jsonResult := string(bodyBytes)
+	return resp.StatusCode, jsonResult
 }
