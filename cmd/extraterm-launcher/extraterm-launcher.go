@@ -27,11 +27,11 @@ func main() {
 		panic(errorString)
 	}
 
-	url := launchMainExecutable()
+	url := launchMainExecutable(len(parsedArgs.Commands) != 0)
 
 	exitCode := 0
 	if len(parsedArgs.Commands) == 0 {
-		runShowWindowCommand(url)
+		exitCode = runShowWindowCommand(url)
 	} else {
 		exitCode = runAllCommands(url, parsedArgs)
 	}
@@ -39,10 +39,10 @@ func main() {
 	os.Exit(exitCode)
 }
 
-func launchMainExecutable() string {
+func launchMainExecutable(bareWindow bool) string {
 	pid, url := readIpcRunFile(settings.IpcRunPath())
 	if pid < 0 {
-		url = runMainExecutable()
+		url = runMainExecutable(bareWindow)
 	}
 	return url
 }
@@ -64,7 +64,7 @@ func readIpcRunFile(ipcRunPath string) (pid int, url string) {
 	return
 }
 
-func runMainExecutable() string {
+func runMainExecutable(bareWindow bool) string {
 	exePath, err := os.Executable()
 	if err != nil {
 		panic(err)
@@ -72,7 +72,14 @@ func runMainExecutable() string {
 
 	mainExePath := filepath.Join(filepath.Dir(exePath), settings.ExtratermExeName)
 	fmt.Printf("Main executable path %s\n", mainExePath)
-	cmd := exec.Command(mainExePath)
+
+	var cmd *exec.Cmd
+	if bareWindow {
+		cmd = exec.Command(mainExePath, "--bare")
+	} else {
+		cmd = exec.Command(mainExePath)
+	}
+
 	if err := cmd.Start(); err != nil {
 		fmt.Fprintf(os.Stderr, "Unable to start the main Extraterm executable. %s\n", err)
 		panic(nil)
@@ -100,11 +107,17 @@ func waitForMainExecutableToAppear(pid int, ipcRunPath string) string {
 	return "" // Unreachable
 }
 
-func runShowWindowCommand(url string) {
+func runShowWindowCommand(url string) int {
 	command := argsparser.MakeCommand()
 	showCommandName := string("extraterm:window.show")
 	command.CommandName = &showCommandName
-	runCommand(url, command)
+
+	httpStatusCode, jsonResult := runCommand(url, command)
+	if isErrorHttpStatusCode(httpStatusCode) {
+		fmt.Println(jsonResult)
+		return 1
+	}
+	return 0
 }
 
 func runAllCommands(url string, parsedArgs *argsparser.CommandLineArguments) int {
@@ -124,7 +137,7 @@ func runAllCommands(url string, parsedArgs *argsparser.CommandLineArguments) int
 		}
 
 		httpStatusCode, jsonResult := runCommand(url, command)
-		if httpStatusCode < 200 || httpStatusCode >= 300 {
+		if isErrorHttpStatusCode(httpStatusCode) {
 			fmt.Println(jsonResult)
 			if len(parsedArgs.Commands) != 1 {
 				fmt.Println("[")
@@ -173,4 +186,8 @@ func runCommand(url string, command *argsparser.Command) (httpStatusCode int, js
 
 	jsonResult := string(bodyBytes)
 	return resp.StatusCode, jsonResult
+}
+
+func isErrorHttpStatusCode(httpStatusCode int) bool {
+	return httpStatusCode < 200 || httpStatusCode >= 300
 }
