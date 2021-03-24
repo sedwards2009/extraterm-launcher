@@ -79,7 +79,6 @@ func TestParseMultipleCommands(t *testing.T) {
 		"extraterm-launcher",
 		"-c",
 		"extraterm:window.listAll",
-		"--",
 		"-c",
 		"extraterm:window.show",
 	}
