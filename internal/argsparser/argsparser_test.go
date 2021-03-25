@@ -101,3 +101,19 @@ func TestParseMultipleCommands(t *testing.T) {
 			*parsedArgs.Commands[1].CommandName)
 	}
 }
+
+func TestParseBareArgs(t *testing.T) {
+	testData := []string{
+		"extraterm-launcher",
+		"/home/sbe",
+	}
+
+	parsedArgs, errorString := Parse(&testData)
+
+	if len(errorString) != 0 {
+		t.Errorf("Parse error: %s", errorString)
+	}
+	if len(parsedArgs.BareArgs) != 1 {
+		t.Errorf("parsedArgs.BareArgs != 1")
+	}
+}

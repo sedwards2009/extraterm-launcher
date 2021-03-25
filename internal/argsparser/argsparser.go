@@ -18,6 +18,7 @@ type Command struct {
 
 type CommandLineArguments struct {
 	Commands []*Command
+	BareArgs []string
 }
 
 func MakeCommand() *Command {
@@ -62,7 +63,7 @@ func Parse(args *[]string) (parsed *CommandLineArguments, errString string) {
 				state = CommandName
 
 			default:
-				return result, fmt.Sprintf("Unknown parameter '%s'.", item)
+				result.BareArgs = append(result.BareArgs, item)
 			}
 
 		case WindowValue:

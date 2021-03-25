@@ -30,7 +30,9 @@ func main() {
 	url := launchMainExecutable(len(parsedArgs.Commands) != 0)
 
 	exitCode := 0
-	if len(parsedArgs.Commands) == 0 {
+	if len(parsedArgs.BareArgs) > 0 {
+		exitCode = runOpenWindowAtCommand(url, parsedArgs.BareArgs[0])
+	} else if len(parsedArgs.Commands) == 0 {
 		exitCode = runShowWindowCommand(url)
 	} else {
 		exitCode = runAllCommands(url, parsedArgs)
@@ -111,6 +113,20 @@ func runShowWindowCommand(url string) int {
 	command := argsparser.MakeCommand()
 	showCommandName := string("extraterm:window.show")
 	command.CommandName = &showCommandName
+
+	httpStatusCode, jsonResult := runCommand(url, command)
+	if isErrorHttpStatusCode(httpStatusCode) {
+		fmt.Println(jsonResult)
+		return 1
+	}
+	return 0
+}
+
+func runOpenWindowAtCommand(url string, path string) int {
+	command := argsparser.MakeCommand()
+	newTerminalCommandName := string("extraterm:window.newTerminal")
+	command.CommandName = &newTerminalCommandName
+	command.CommandParameters["--working-directory"] = path
 
 	httpStatusCode, jsonResult := runCommand(url, command)
 	if isErrorHttpStatusCode(httpStatusCode) {
