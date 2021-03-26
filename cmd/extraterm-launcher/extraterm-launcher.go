@@ -73,7 +73,6 @@ func runMainExecutable(bareWindow bool) string {
 	}
 
 	mainExePath := filepath.Join(filepath.Dir(exePath), settings.ExtratermExeName)
-	fmt.Printf("Main executable path %s\n", mainExePath)
 
 	var cmd *exec.Cmd
 	if bareWindow {
