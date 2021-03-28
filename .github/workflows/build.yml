@@ -58,11 +58,22 @@ jobs:
       with:
         go-version: 1.16
 
+    - name: curl down the rcedit.exe
+      uses: wei/curl@v1.1.1
+      with:
+        args: https://github.com/electron/rcedit/releases/download/v1.1.1/rcedit-x64.exe
+
+    - name: dir
+      run: dir
+
     - name: Build
       run: go build -v -ldflags -H=windowsgui cmd/extraterm-launcher/extraterm-launcher.go
 
     - name: Test
       run: go test -v ./...
+
+    - name: Insert icon on exe
+      run: rcedit-x64.exe extraterm-launcher.exe --set-icon resources/extraterm_small_logo.ico
 
     - name: Keep the executable
       uses: actions/upload-artifact@v2
