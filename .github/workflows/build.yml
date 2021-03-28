@@ -58,12 +58,9 @@ jobs:
       with:
         go-version: 1.16
 
-    - name: Download the rcedit.exe
+    - name: Download rcedit.exe
       shell: pwsh
       run: Invoke-WebRequest -Uri https://github.com/electron/rcedit/releases/download/v1.1.1/rcedit-x64.exe -OutFile rcedit.exe
-
-    - name: dir
-      run: dir
 
     - name: Build
       run: go build -v -ldflags -H=windowsgui cmd/extraterm-launcher/extraterm-launcher.go
