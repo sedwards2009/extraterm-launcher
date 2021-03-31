@@ -15,7 +15,7 @@ jobs:
         go-version: 1.16
 
     - name: Build
-      run: go build -v cmd/extraterm-launcher/extraterm-launcher.go
+      run: go build -v -ldflags="-s -w" cmd/extraterm-launcher/extraterm-launcher.go
 
     - name: Test
       run: go test -v ./...
@@ -37,7 +37,7 @@ jobs:
         go-version: 1.16
 
     - name: Build
-      run: go build -v cmd/extraterm-launcher/extraterm-launcher.go
+      run: go build -v -ldflags="-s -w" cmd/extraterm-launcher/extraterm-launcher.go
 
     - name: Test
       run: go test -v ./...
@@ -63,7 +63,7 @@ jobs:
       run: Invoke-WebRequest -Uri https://github.com/electron/rcedit/releases/download/v1.1.1/rcedit-x64.exe -OutFile rcedit.exe
 
     - name: Build
-      run: go build -v -ldflags -H=windowsgui cmd/extraterm-launcher/extraterm-launcher.go
+      run: go build -v -ldflags "-s -w -H=windowsgui" cmd/extraterm-launcher/extraterm-launcher.go
 
     - name: Test
       run: go test -v ./...
