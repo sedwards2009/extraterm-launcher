@@ -32,8 +32,15 @@ func main() {
 	exitCode := 0
 	if len(parsedArgs.BareArgs) > 0 {
 		exitCode = runOpenWindowAtCommand(url, parsedArgs.BareArgs[0])
+		if exitCode == 0 {
+			exitCode = runShowWindowCommand(url)
+		}
 	} else if len(parsedArgs.Commands) == 0 {
-		exitCode = runShowWindowCommand(url)
+		cwd, _ := os.Getwd()
+		exitCode = runOpenWindowAtCommand(url, cwd)
+		if exitCode == 0 {
+			exitCode = runShowWindowCommand(url)
+		}
 	} else {
 		exitCode = runAllCommands(url, parsedArgs)
 	}
