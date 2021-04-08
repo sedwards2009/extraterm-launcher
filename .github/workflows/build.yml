@@ -88,23 +88,22 @@ jobs:
       uses: actions/download-artifact@v2
       with:
         name: extraterm-launcher-linux
-        path: extraterm-launcher-linux
+
+    - run: mv extraterm-launcher extraterm-launcher-linux
 
     - name: Download MacOS executable
       uses: actions/download-artifact@v2
       with:
         name: extraterm-launcher-macos
-        path: extraterm-launcher-macos
+
+    - run: mv extraterm-launcher extraterm-launcher-macos
 
     - name: Download Windows executable
       uses: actions/download-artifact@v2
       with:
         name: extraterm-launcher-windows
-        path: extraterm-launcher-windows
 
-    - run: mv extraterm-launcher-linux/extraterm-launcher extraterm-launcher-linux
-    - run: mv extraterm-launcher-windows/extraterm-launcher.exe extraterm-launcher-windows.exe
-    - run: mv extraterm-launcher-macos/extraterm-launcher extraterm-launcher-macos
+    - run: mv extraterm-launcher.exe extraterm-launcher-windows.exe
 
     - run: find .
 
