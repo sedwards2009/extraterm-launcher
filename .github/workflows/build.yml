@@ -100,7 +100,7 @@ jobs:
       uses: actions/download-artifact@v2
       with:
         name: extraterm-launcher-windows
-        path: extraterm-launcher-windows.exe
+        path: extraterm-launcher-windows
 
     - run: ls -alp
 
@@ -108,9 +108,9 @@ jobs:
       uses: softprops/action-gh-release@v1
       with:
         files: |
-          extraterm-launcher-linux
-          extraterm-launcher-macos
-          extraterm-launcher-windows.exe
+          extraterm-launcher-linux/extraterm-launcher-linux
+          extraterm-launcher-macos/extraterm-launcher-macos
+          extraterm-launcher-windows/extraterm-launcher-windows.exe
         draft: true
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
