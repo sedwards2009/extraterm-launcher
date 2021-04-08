@@ -103,6 +103,7 @@ jobs:
         path: extraterm-launcher-windows
 
     - run: ls -alp
+    - run: find .
 
     - name: Create GH release
       uses: softprops/action-gh-release@v1
