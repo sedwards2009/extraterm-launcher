@@ -102,16 +102,19 @@ jobs:
         name: extraterm-launcher-windows
         path: extraterm-launcher-windows
 
-    - run: ls -alp
+    - run: mv extraterm-launcher-linux/extraterm-launcher extraterm-launcher-linux
+    - run: mv extraterm-launcher-windows/extraterm-launcher.exe extraterm-launcher-windows.exe
+    - run: mv extraterm-launcher-macos/extraterm-launcher extraterm-launcher-macos
+
     - run: find .
 
     - name: Create GH release
       uses: softprops/action-gh-release@v1
       with:
         files: |
-          extraterm-launcher-linux/extraterm-launcher-linux
-          extraterm-launcher-macos/extraterm-launcher-macos
-          extraterm-launcher-windows/extraterm-launcher-windows.exe
+          extraterm-launcher-linux
+          extraterm-launcher-macos
+          extraterm-launcher-windows.exe
         draft: true
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
