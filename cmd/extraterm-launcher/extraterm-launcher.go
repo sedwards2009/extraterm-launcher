@@ -27,7 +27,7 @@ func main() {
 		panic(errorString)
 	}
 
-	url := launchMainExecutable(len(parsedArgs.Commands) != 0)
+	url := launchMainExecutable()
 
 	exitCode := 0
 	if len(parsedArgs.BareArgs) > 0 {
@@ -48,10 +48,10 @@ func main() {
 	os.Exit(exitCode)
 }
 
-func launchMainExecutable(bareWindow bool) string {
+func launchMainExecutable() string {
 	pid, url := readIpcRunFile(settings.IpcRunPath())
 	if pid < 0 {
-		url = runMainExecutable(bareWindow)
+		url = runMainExecutable()
 	}
 	return url
 }
@@ -73,7 +73,7 @@ func readIpcRunFile(ipcRunPath string) (pid int, url string) {
 	return
 }
 
-func runMainExecutable(bareWindow bool) string {
+func runMainExecutable() string {
 	exePath, err := os.Executable()
 	if err != nil {
 		panic(err)
@@ -81,13 +81,7 @@ func runMainExecutable(bareWindow bool) string {
 
 	mainExePath := filepath.Join(filepath.Dir(exePath), settings.ExtratermExeName)
 
-	var cmd *exec.Cmd
-	if bareWindow {
-		cmd = exec.Command(mainExePath, "--bare")
-	} else {
-		cmd = exec.Command(mainExePath)
-	}
-
+	cmd := exec.Command(mainExePath, "--bare")
 	if err := cmd.Start(); err != nil {
 		fmt.Fprintf(os.Stderr, "Unable to start the main Extraterm executable. %s\n", err)
 		panic(nil)
