@@ -19,6 +19,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/mitchellh/go-ps"
 )
 
 func main() {
@@ -51,6 +53,12 @@ func main() {
 func launchMainExecutable() string {
 	pid, url := readIpcRunFile(settings.IpcRunPath())
 	if pid < 0 {
+		url = runMainExecutable()
+		return url
+	}
+
+	processInfo, _ := ps.FindProcess(pid)
+	if processInfo == nil {
 		url = runMainExecutable()
 	}
 	return url
