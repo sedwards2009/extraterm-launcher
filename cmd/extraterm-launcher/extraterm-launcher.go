@@ -19,8 +19,6 @@ import (
 	"strconv"
 	"strings"
 	"time"
-
-	"github.com/mitchellh/go-ps"
 )
 
 func main() {
@@ -51,34 +49,28 @@ func main() {
 }
 
 func launchMainExecutable() string {
-	pid, url := readIpcRunFile(settings.IpcRunPath())
-	if pid < 0 {
-		url = runMainExecutable()
-		return url
+	url := readIpcRunFile(settings.IpcRunPath())
+	if url != "" {
+		if ping(url) {
+			return url
+		}
 	}
 
-	processInfo, _ := ps.FindProcess(pid)
-	if processInfo == nil {
-		url = runMainExecutable()
-	}
-	return url
+	return runMainExecutable()
 }
 
-func readIpcRunFile(ipcRunPath string) (pid int, url string) {
+func readIpcRunFile(ipcRunPath string) string {
 	contentBytes, err := os.ReadFile(settings.IpcRunPath())
 	if err != nil {
-		pid = -1
-		return
+		return ""
 	}
 	content := string(contentBytes)
 	parts := strings.Split(content, "\n")
-	pid, err = strconv.Atoi(parts[0])
+	_, err = strconv.Atoi(parts[0])
 	if err != nil {
-		pid = -1
-		return
+		return ""
 	}
-	url = parts[1]
-	return
+	return parts[1]
 }
 
 func runMainExecutable() string {
@@ -95,26 +87,23 @@ func runMainExecutable() string {
 		panic(nil)
 	}
 
-	return waitForMainExecutableToAppear(cmd.Process.Pid, settings.IpcRunPath())
+	return waitForMainExecutableToAppear(settings.IpcRunPath())
 }
 
-func waitForMainExecutableToAppear(pid int, ipcRunPath string) string {
-	for true {
-		filePid, url := readIpcRunFile(ipcRunPath)
-		if filePid == pid {
+func waitForMainExecutableToAppear(ipcRunPath string) string {
+	sleepTime := 250 * time.Millisecond
+	retryTime := 10 * time.Second
+
+	for i := time.Duration(0); i < retryTime; i += sleepTime {
+		url := readIpcRunFile(ipcRunPath)
+		if ping(url) {
 			return url
 		}
 
-		_, err := os.FindProcess(pid)
-		if err != nil {
-			fmt.Fprintln(os.Stderr, "Unable to start the main Extraterm executable. It appears to have died.")
-			panic(nil)
-		}
-
-		time.Sleep(250 * time.Millisecond)
+		time.Sleep(sleepTime)
 	}
 
-	return "" // Unreachable
+	return "" // Time-out
 }
 
 func runShowWindowCommand(url string) int {
@@ -214,4 +203,14 @@ func runCommand(url string, command *argsparser.Command) (httpStatusCode int, js
 
 func isErrorHttpStatusCode(httpStatusCode int) bool {
 	return httpStatusCode < 200 || httpStatusCode >= 300
+}
+
+func ping(url string) bool {
+	resp, err := http.Get(url + "/ping")
+	if err != nil || resp.StatusCode != 200 {
+		return false
+	}
+	bodyBytes, err := ioutil.ReadAll(resp.Body)
+	message := string(bodyBytes)
+	return message == "pong"
 }
