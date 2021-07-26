@@ -79,9 +79,11 @@ func runMainExecutable() string {
 		panic(err)
 	}
 
-	mainExePath := filepath.Join(filepath.Dir(exePath), settings.ExtratermExeName)
+	exePathDir := filepath.Dir(exePath)
+	qodeExePath := filepath.Join(exePathDir, settings.QodeExePath)
+	mainJsPath := filepath.Join(exePathDir, settings.MainJsPath)
 
-	cmd := exec.Command(mainExePath, "--bare")
+	cmd := exec.Command(qodeExePath, mainJsPath)
 	if err := cmd.Start(); err != nil {
 		fmt.Fprintf(os.Stderr, "Unable to start the main Extraterm executable. %s\n", err)
 		panic(nil)

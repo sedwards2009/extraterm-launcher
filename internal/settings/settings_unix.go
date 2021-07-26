@@ -16,15 +16,15 @@ import (
 func IpcRunPath() string {
 	xdgConfigHome := os.Getenv("XDG_CONFIG_HOME")
 	if len(xdgConfigHome) != 0 {
-		return filepath.Join(xdgConfigHome, "extraterm/ipc.run")
+		return filepath.Join(xdgConfigHome, "extraterm-qt/ipc.run")
 	}
 
 	homeDir, err := os.UserHomeDir()
 	if err != nil {
 		panic(err)
 	}
-	return filepath.Join(homeDir, ".config/extraterm/ipc.run")
+	return filepath.Join(homeDir, ".config/extraterm-qt/ipc.run")
 }
 
-// ExtratermExeName is the name of the Extraterm main executable.
-const ExtratermExeName = "extraterm_main"
+const QodeExePath = "node_modules/@nodegui/qode/binaries/qode"
+const MainJsPath = "main/dist/main.js"

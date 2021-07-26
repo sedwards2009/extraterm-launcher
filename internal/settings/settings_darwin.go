@@ -18,8 +18,8 @@ func IpcRunPath() string {
 	if err != nil {
 		panic(err)
 	}
-	return filepath.Join(homeDir, "Library/Application Support/extraterm/ipc.run")
+	return filepath.Join(homeDir, "Library/Application Support/extraterm-qt/ipc.run")
 }
 
-// ExtratermExeName is the name of the Extraterm main executable.
-const ExtratermExeName = "extraterm_main"
+const QodeExePath = "node_modules/@nodegui/qode/binaries/qode"
+const MainJsPath = "main/dist/main.js"
