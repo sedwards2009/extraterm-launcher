@@ -16,14 +16,14 @@ import (
 func IpcRunPath() string {
 	xdgConfigHome := os.Getenv("XDG_CONFIG_HOME")
 	if len(xdgConfigHome) != 0 {
-		return filepath.Join(xdgConfigHome, "extraterm-qt/ipc.run")
+		return filepath.Join(xdgConfigHome, "extratermqt/ipc.run")
 	}
 
 	homeDir, err := os.UserHomeDir()
 	if err != nil {
 		panic(err)
 	}
-	return filepath.Join(homeDir, ".config/extraterm-qt/ipc.run")
+	return filepath.Join(homeDir, ".config/extratermqt/ipc.run")
 }
 
 const QodeExePath = "qode"

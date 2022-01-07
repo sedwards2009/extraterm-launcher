@@ -14,7 +14,7 @@ import (
 
 func IpcRunPath() string {
 	appData := os.Getenv("APPDATA")
-	return filepath.Join(appData, "extraterm-qt", "ipc.run")
+	return filepath.Join(appData, "extratermqt", "ipc.run")
 }
 
 const QodeExePath = "qode"

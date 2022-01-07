@@ -18,7 +18,7 @@ func IpcRunPath() string {
 	if err != nil {
 		panic(err)
 	}
-	return filepath.Join(homeDir, "Library/Application Support/extraterm-qt/ipc.run")
+	return filepath.Join(homeDir, "Library/Application Support/extratermqt/ipc.run")
 }
 
 const QodeExePath = "node_modules/@nodegui/qode/binaries/qode"
