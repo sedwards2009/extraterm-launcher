@@ -21,5 +21,5 @@ func IpcRunPath() string {
 	return filepath.Join(homeDir, "Library/Application Support/extratermqt/ipc.run")
 }
 
-const QodeExePath = "node_modules/@nodegui/qode/binaries/qode"
-const MainJsPath = "main/dist/main.js"
+const QodeExePath = "./qode"
+const MainJsPath = "../Resources/main/dist/main.js"

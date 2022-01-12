@@ -48,6 +48,7 @@ func main() {
 	os.Exit(exitCode)
 }
 
+// Returns: URL to Extraterm's localhost IPC server
 func launchMainExecutable() string {
 	url := readIpcRunFile(settings.IpcRunPath())
 	if url != "" {
@@ -73,6 +74,7 @@ func readIpcRunFile(ipcRunPath string) string {
 	return parts[1]
 }
 
+// Returns: URL to Extraterm's localhost IPC server
 func runMainExecutable() string {
 	exePath, err := os.Executable()
 	if err != nil {
@@ -84,6 +86,8 @@ func runMainExecutable() string {
 	mainJsPath := filepath.Join(exePathDir, settings.MainJsPath)
 
 	cmd := exec.Command(qodeExePath, mainJsPath)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
 	if err := cmd.Start(); err != nil {
 		fmt.Fprintf(os.Stderr, "Unable to start the main Extraterm executable. %s\n", err)
 		panic(nil)
@@ -92,6 +96,7 @@ func runMainExecutable() string {
 	return waitForMainExecutableToAppear(settings.IpcRunPath())
 }
 
+// Returns: URL to Extraterm's localhost IPC server or empty string if Extraterm didn't respond.
 func waitForMainExecutableToAppear(ipcRunPath string) string {
 	sleepTime := 250 * time.Millisecond
 	retryTime := 10 * time.Second
