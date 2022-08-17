@@ -1,3 +1,4 @@
+//go:build windows
 // +build windows
 
 /*
@@ -14,7 +15,7 @@ import (
 
 func IpcRunPath() string {
 	appData := os.Getenv("APPDATA")
-	return filepath.Join(appData, "extratermqt", "ipc.run")
+	return filepath.Join(appData, "extratermqt", "Config", "ipc.run")
 }
 
 const QodeExePath = "qode"
