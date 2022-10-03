@@ -19,4 +19,4 @@ func IpcRunPath() string {
 }
 
 const QodeExePath = "qode"
-const MainJsPath = "main/dist/main.js"
+const MainJsPath = "main/dist/main.cjs"
