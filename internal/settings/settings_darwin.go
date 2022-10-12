@@ -1,3 +1,4 @@
+//go:build darwin
 // +build darwin
 
 /*
@@ -23,3 +24,7 @@ func IpcRunPath() string {
 
 const QodeExePath = "./node_modules/@nodegui/qode/binaries/qode"
 const MainJsPath = "../Resources/main/dist/main.cjs"
+
+func ExeEnviron() []string {
+	return os.Environ()
+}

@@ -88,6 +88,7 @@ func runMainExecutable() string {
 	cmd := exec.Command(qodeExePath, mainJsPath)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
+	cmd.Env = settings.ExeEnviron()
 	if err := cmd.Start(); err != nil {
 		fmt.Fprintf(os.Stderr, "Unable to start the main Extraterm executable. %s\n", err)
 		panic(nil)
