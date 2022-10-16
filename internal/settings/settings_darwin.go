@@ -23,7 +23,7 @@ func IpcRunPath() string {
 }
 
 func QodeExePath(exePathDir string) string {
-	if _, err := os.Stat(QodeExePath); if err != nill {
+	if _, err := os.Stat(QodeExePath); err != nil {
 		return filepath.Join(exePathDir, "../Resources/node_modules/@nodegui/qode/binaries/qode")
 	}
 	return filepath.Join(exePathDir, "./node_modules/@nodegui/qode/binaries/qode")
