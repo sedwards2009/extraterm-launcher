@@ -80,10 +80,9 @@ func runMainExecutable() string {
 	if err != nil {
 		panic(err)
 	}
-
 	exePathDir := filepath.Dir(exePath)
-	qodeExePath := filepath.Join(exePathDir, settings.QodeExePath)
-	mainJsPath := filepath.Join(exePathDir, settings.MainJsPath)
+	qodeExePath := settings.QodeExePath(exePathDir)
+	mainJsPath := settings.MainJsPath(exePathDir)
 
 	cmd := exec.Command(qodeExePath, mainJsPath)
 	cmd.Stdout = os.Stdout
