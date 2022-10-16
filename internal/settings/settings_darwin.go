@@ -23,10 +23,11 @@ func IpcRunPath() string {
 }
 
 func QodeExePath(exePathDir string) string {
-	if _, err := os.Stat(QodeExePath); err != nil {
+	defaultQodePath := filepath.Join(exePathDir, "./node_modules/@nodegui/qode/binaries/qode")
+	if _, err := os.Stat(defaultQodePath); err != nil {
 		return filepath.Join(exePathDir, "../Resources/node_modules/@nodegui/qode/binaries/qode")
 	}
-	return filepath.Join(exePathDir, "./node_modules/@nodegui/qode/binaries/qode")
+	return defaultQodePath
 }
 
 func MainJsPath(exePathDir string) string {
