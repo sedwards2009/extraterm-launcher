@@ -115,7 +115,7 @@ func waitForMainExecutableToAppear(ipcRunPath string) string {
 
 func runShowWindowCommand(url string) int {
 	command := argsparser.MakeCommand()
-	showCommandName := string("extraterm:window.show")
+	showCommandName := string("extraterm:window.showAll")
 	command.CommandName = &showCommandName
 
 	httpStatusCode, jsonResult := runCommand(url, command)
