@@ -39,11 +39,11 @@ func ExeEnviron() []string {
 	var extraPath strings.Builder
 	dllPaths := []string{
 		"main\\resources\\list-fonts-json-binary\\win32-x64",
-		"node_modules\\@nodegui\\nodegui\\miniqt\\5.15.2\\msvc2019_64\\bin",
-		"node_modules\\@nodegui\\nodegui\\miniqt\\5.15.2\\msvc2019_64\\plugins\\iconengines",
-		"node_modules\\@nodegui\\nodegui\\miniqt\\5.15.2\\msvc2019_64\\plugins\\imageformats",
-		"node_modules\\@nodegui\\nodegui\\miniqt\\5.15.2\\msvc2019_64\\plugins\\platforms",
-		"node_modules\\@nodegui\\nodegui\\miniqt\\5.15.2\\msvc2019_64\\plugins\\styles",
+		"node_modules\\@nodegui\\nodegui\\miniqt\\6.4.1\\msvc2019_64\\bin",
+		"node_modules\\@nodegui\\nodegui\\miniqt\\6.4.1\\msvc2019_64\\plugins\\iconengines",
+		"node_modules\\@nodegui\\nodegui\\miniqt\\6.4.1\\msvc2019_64\\plugins\\imageformats",
+		"node_modules\\@nodegui\\nodegui\\miniqt\\6.4.1\\msvc2019_64\\plugins\\platforms",
+		"node_modules\\@nodegui\\nodegui\\miniqt\\6.4.1\\msvc2019_64\\plugins\\styles",
 	}
 
 	extraPath.WriteString("Path=")
