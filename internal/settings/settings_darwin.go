@@ -19,7 +19,7 @@ func IpcRunPath() string {
 	if err != nil {
 		panic(err)
 	}
-	return filepath.Join(homeDir, "Library/Application Support/extratermqt/ipc.run")
+	return filepath.Join(homeDir, "Library/Preferences/extratermqt/ipc.run")
 }
 
 func QodeExePath(exePathDir string) string {
