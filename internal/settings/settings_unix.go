@@ -36,5 +36,5 @@ func MainJsPath(exePathDir string) string {
 }
 
 func ExeEnviron() []string {
-	return os.Environ()
+	return append(os.Environ(), "QT_SCALE_FACTOR_ROUNDING_POLICY=RoundPreferFloor")
 }
