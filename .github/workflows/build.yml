@@ -103,7 +103,12 @@ jobs:
     - name: Download MacOS executable
       uses: actions/download-artifact@v4
       with:
-        name: extraterm-launcher-macos
+        name: extraterm-launcher-macos-x64
+
+    - name: Download MacOS executable
+      uses: actions/download-artifact@v4
+      with:
+        name: extraterm-launcher-macos-arm64
 
     - run: mv extraterm-launcher extraterm-launcher-macos
 
@@ -120,5 +125,6 @@ jobs:
         token: ${{ secrets.GITHUB_TOKEN }}
         files: |
           extraterm-launcher-linux
-          extraterm-launcher-macos
+          extraterm-launcher-macos-x64
+          extraterm-launcher-macos-arm64
           extraterm-launcher-windows.exe
