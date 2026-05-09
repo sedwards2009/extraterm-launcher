@@ -7,10 +7,10 @@ jobs:
   build-linux:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
 
     - name: Set up Go
-      uses: actions/setup-go@v2
+      uses: actions/setup-go@v5
       with:
         go-version: 1.21.1
 
@@ -21,7 +21,7 @@ jobs:
       run: go test -v ./...
 
     - name: Keep the executable
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: extraterm-launcher-linux
         path: extraterm-launcher
@@ -38,10 +38,10 @@ jobs:
             arch: arm64
     runs-on: ${{ matrix.os }}
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
 
     - name: Set up Go
-      uses: actions/setup-go@v2
+      uses: actions/setup-go@v5
       with:
         go-version: 1.21.1
 
@@ -52,7 +52,7 @@ jobs:
       run: go test -v ./...
 
     - name: Keep the executable
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: extraterm-launcher-macos-${{ matrix.arch }}
         path: extraterm-launcher
@@ -60,10 +60,10 @@ jobs:
   build-windows:
     runs-on: windows-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
 
     - name: Set up Go
-      uses: actions/setup-go@v2
+      uses: actions/setup-go@v5
       with:
         go-version: 1.21.1
 
@@ -81,7 +81,7 @@ jobs:
       run: .\rcedit.exe extraterm-launcher.exe --set-icon resources/extraterm_small_logo.ico
 
     - name: Keep the executable
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: extraterm-launcher-windows
         path: extraterm-launcher.exe
@@ -94,32 +94,31 @@ jobs:
 
     steps:
     - name: Download Linux executable
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v4
       with:
         name: extraterm-launcher-linux
 
     - run: mv extraterm-launcher extraterm-launcher-linux
 
     - name: Download MacOS executable
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v4
       with:
         name: extraterm-launcher-macos
 
     - run: mv extraterm-launcher extraterm-launcher-macos
 
     - name: Download Windows executable
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v4
       with:
         name: extraterm-launcher-windows
 
     - run: mv extraterm-launcher.exe extraterm-launcher-windows.exe
 
     - name: Create GH release
-      uses: softprops/action-gh-release@v1
+      uses: softprops/action-gh-release@v2
       with:
+        token: ${{ secrets.GITHUB_TOKEN }}
         files: |
           extraterm-launcher-linux
           extraterm-launcher-macos
           extraterm-launcher-windows.exe
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
