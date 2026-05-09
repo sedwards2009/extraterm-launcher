@@ -105,12 +105,14 @@ jobs:
       with:
         name: extraterm-launcher-macos-x64
 
+    - run: mv extraterm-launcher extraterm-launcher-macos-x64
+
     - name: Download MacOS executable
       uses: actions/download-artifact@v4
       with:
         name: extraterm-launcher-macos-arm64
 
-    - run: mv extraterm-launcher extraterm-launcher-macos
+    - run: mv extraterm-launcher extraterm-launcher-macos-arm64
 
     - name: Download Windows executable
       uses: actions/download-artifact@v4
