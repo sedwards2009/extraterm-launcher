@@ -27,7 +27,16 @@ jobs:
         path: extraterm-launcher
 
   build-macos:
-    runs-on: macos-latest
+    strategy:
+      matrix:
+        include:
+          - os: macos-15-intel
+            platform: darwin
+            arch: x64
+          - os: macos-15
+            platform: darwin
+            arch: arm64
+    runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v2
 
@@ -45,7 +54,7 @@ jobs:
     - name: Keep the executable
       uses: actions/upload-artifact@v2
       with:
-        name: extraterm-launcher-macos
+        name: extraterm-launcher-macos-${{ matrix.arch }}
         path: extraterm-launcher
 
   build-windows:
